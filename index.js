@@ -13,10 +13,10 @@ var salt = "dfvd"
 app.use(express.static("public"));
 
 io.on("connection", function(socket) {
-  io.emit("chat message", humanhash.humanize(socket.handshake.headers["x-forwarded-for"].split(",")[0]+salt)+'-'+socket.id.substring(0, 1)+' has joined')
+  io.emit("chat message", humanhash.humanize(socket.request.connection.remoteAddress+salt)+'-'+socket.id.substring(0, 1)+' has joined')
   socket.on("chat message", function(msg) {
     if (msg != "") {
-      var ip = socket.handshake.headers["x-forwarded-for"].split(",")[0];
+      var ip = socket.request.connection.remoteAddress;
       msg =
         "<" +
         humanhash.humanize(ip + salt) +
@@ -29,7 +29,6 @@ io.on("connection", function(socket) {
     }
   });
 });
-io.on('')
 
 
 http.listen(port, function() {
